@@ -1,0 +1,14 @@
+{
+  "id": "{1C46408B-702A-9977-DD66-233827F977F6}",
+  "name": "Sabotagemelder",
+  "type": 3,
+  "vendor": "Ulrich Bittner",
+  "aliases": [
+    "Sabotagemelder"
+  ],
+  "url": "https://github.com/ubittner/Sabotagemelder",
+  "parentRequirements": [],
+  "childRequirements": [],
+  "implemented": [],
+  "prefix": "SM"
+}

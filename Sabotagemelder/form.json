@@ -1,0 +1,320 @@
+{
+  "elements": [
+    {
+      "type": "ExpansionPanel",
+      "caption": "Funktionen",
+      "items": [
+        {
+          "type": "CheckBox",
+          "name": "MaintenanceMode",
+          "caption": "Wartungsmodus"
+        },
+        {
+          "type": "Label",
+          "caption": " "
+        },
+        {
+          "type": "CheckBox",
+          "name": "EnableSabotageDetection",
+          "caption": "Sabotagemelder"
+        },
+        {
+          "type": "CheckBox",
+          "name": "EnableLocationDesignation",
+          "caption": "Standort"
+        },
+        {
+          "type": "CheckBox",
+          "name": "EnableSensorList",
+          "caption": "Sabotagesensoren"
+        },
+        {
+          "type": "CheckBox",
+          "name": "EnableState",
+          "caption": "Status"
+        },
+        {
+          "type": "CheckBox",
+          "name": "EnableAlertingSensor",
+          "caption": "Auslösender Sensor"
+        }
+      ]
+    },
+    {
+      "type": "ExpansionPanel",
+      "caption": "Bezeichnung",
+      "items": [
+        {
+          "type": "ValidationTextBox",
+          "name": "LocationDesignation",
+          "caption": "Standortbezeichnung",
+          "width": "300px"
+        }
+      ]
+    },
+    {
+      "type": "ExpansionPanel",
+      "caption": "Sabotagesensoren",
+      "items": [
+        {
+          "type": "List",
+          "name": "SabotageSensors",
+          "rowCount": 10,
+          "add": true,
+          "delete": true,
+          "columns": [
+            {
+              "caption": "Aktiviert",
+              "name": "Use",
+              "width": "100px",
+              "add": true,
+              "edit": {
+                "type": "CheckBox"
+              }
+            },
+            {
+              "name": "ActualStatus",
+              "caption": "Aktueller Status",
+              "width": "150px",
+              "add": ""
+            },
+            {
+              "caption": "Bezeichnung",
+              "name": "Name",
+              "width": "350px",
+              "add": "",
+              "edit": {
+                "type": "ValidationTextBox"
+              }
+            },
+            {
+              "caption": "Auslösende Variable",
+              "name": "ID",
+              "width": "auto",
+              "add": 0,
+              "onClick": "SM_EnableTriggerVariableConfigurationButton($id, $SabotageSensors['ID']);",
+              "edit": {
+                "type": "SelectVariable"
+              }
+            },
+            {
+              "caption": "Info",
+              "name": "Info",
+              "width": "160px",
+              "add": "",
+              "visible": false,
+              "edit": {
+                "type": "Button",
+                "onClick": "SM_ShowVariableDetails($id, $ID);"
+              }
+            },
+            {
+              "caption": "Auslösewert",
+              "name": "TriggerValue",
+              "width": "140px",
+              "add": "true",
+              "edit": {
+                "type": "ValidationTextBox"
+              }
+            }
+          ]
+        },
+        {
+          "type": "OpenObjectButton",
+          "caption": "Bearbeiten",
+          "name": "TriggerVariableConfigurationButton",
+          "enabled": false,
+          "visible": false,
+          "objectID": 0
+        }
+      ]
+    },
+    {
+      "type": "ExpansionPanel",
+      "caption": "Benachrichtigungen",
+      "items": [
+        {
+          "type": "CheckBox",
+          "name": "UseNotification",
+          "caption": "Sofortige Benachrichtigung bei Statusänderung"
+        },
+        {
+          "type": "RowLayout",
+          "items": [
+            {
+              "type": "CheckBox",
+              "name": "UseStateSabotageDetected",
+              "caption": "\uD83E\uDD77"
+            },
+            {
+              "type": "Label",
+              "caption": "Sabotage erkannt"
+            }
+          ]
+        },
+        {
+          "type": "RowLayout",
+          "items": [
+            {
+              "type": "CheckBox",
+              "name": "UseStateOK",
+              "caption": "\u2705"
+            },
+            {
+              "type": "Label",
+              "caption": "OK"
+            }
+          ]
+        },
+        {
+          "type": "Label",
+          "caption": " "
+        },
+        {
+          "type": "CheckBox",
+          "name": "UseDailyNotification",
+          "caption": "Tagesbericht über den aktuellen Status"
+        },
+        {
+          "type": "SelectTime",
+          "name": "DailyNotificationTime",
+          "caption": "Uhrzeit"
+        },
+        {
+          "type": "Label",
+          "caption": " "
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "type": "ExpansionPanel",
+      "caption": "Konfiguration",
+      "items": [
+        {
+          "type": "Button",
+          "caption": "Neu einlesen",
+          "onClick": "SM_ReloadConfiguration($id);"
+        },
+        {
+          "type": "RowLayout",
+          "items": [
+            {
+              "type": "SelectCategory",
+              "name": "BackupCategory",
+              "caption": "Kategorie",
+              "width": "600px"
+            },
+            {
+              "type": "Label",
+              "caption": " "
+            },
+            {
+              "type": "Button",
+              "caption": "Sichern",
+              "onClick": "SM_CreateBackup($id, $BackupCategory);"
+            }
+          ]
+        },
+        {
+          "type": "RowLayout",
+          "items": [
+            {
+              "type": "SelectScript",
+              "name": "ConfigurationScript",
+              "caption": "Konfiguration",
+              "width": "600px"
+            },
+            {
+              "type": "Label",
+              "caption": " "
+            },
+            {
+              "type": "PopupButton",
+              "caption": "Wiederherstellen",
+              "popup": {
+                "caption": "Konfiguration wirklich wiederherstellen?",
+                "items": [
+                  {
+                    "type": "Button",
+                    "caption": "Wiederherstellen",
+                    "onClick": "SM_RestoreConfiguration($id, $ConfigurationScript);"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "ExpansionPanel",
+      "caption": "Registrierte Nachrichten",
+      "items": [
+        {
+          "type": "List",
+          "name": "RegisteredMessages",
+          "rowCount": 11,
+          "sort": {
+            "column": "SenderID",
+            "direction": "ascending"
+          },
+          "columns": [
+            {
+              "caption": "Sender ID",
+              "name": "SenderID",
+              "width": "150px"
+            },
+            {
+              "caption": "Sender Name",
+              "name": "SenderName",
+              "width": "auto"
+            },
+            {
+              "caption": "Nachrichten ID",
+              "name": "MessageID",
+              "width": "150px"
+            },
+            {
+              "caption": "Nachrichten Bezeichnung",
+              "name": "MessageDescription",
+              "width": "250px"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "ExpansionPanel",
+      "caption": "Tagesbericht",
+      "items": [
+        {
+          "type": "Button",
+          "caption": "Tagesbericht versenden",
+          "onClick": "SM_SendDailyNotification($id); echo 'Die Benachrichtigungen wurden versendet!';"
+        }
+      ]
+    },
+    {
+      "type": "ExpansionPanel",
+      "caption": "Homematic Sabotagesensoren",
+      "items": [
+        {
+          "type": "PopupButton",
+          "caption": "Sabotagesensoren automatisch ermitteln",
+          "popup": {
+            "caption": "Sabotagesensoren wirklich ermitteln?",
+            "items": [
+              {
+                "type": "Button",
+                "caption": "Sabotagesensoren ermitteln",
+                "onClick": "SM_DetermineSabotageSensors($id);"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+    "id": "{01522813-747C-7FFD-3208-5E721C4765DC}",
+    "author": "Ulrich Bittner",
+    "name": "Sabotagemelder",
+    "url": "https://github.com/ubittner/Sabotagemelder",
+    "compatibility": {
+        "version": "5.5"
+    },
+    "version": "1.00",
+    "build": 1,
+    "date": 1621241299
+}
