@@ -315,6 +315,15 @@
           }
         }
       ]
+    },
+    {
+      "type": "ExpansionPanel",
+      "caption": "Schaltfunktionen",
+      "items": [
+        {
+          "type": "TestCenter"
+        }
+      ]
     }
   ]
 }
