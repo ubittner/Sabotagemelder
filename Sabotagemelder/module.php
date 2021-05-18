@@ -19,7 +19,7 @@ class Sabotagemelder extends IPSModule
     //Helper
     use SM_backupRestore;
     use SM_notification;
-    use SM_sabotageSensor;
+    use SM_sabotageDetector;
 
     // Constants
     private const WEBFRONT_MODULE_GUID = '{3565B1F2-8F7B-4311-A4B6-1BF1D868F39E}';
@@ -39,13 +39,13 @@ class Sabotagemelder extends IPSModule
         $this->RegisterPropertyBoolean('MaintenanceMode', false);
         $this->RegisterPropertyBoolean('EnableSabotageDetection', true);
         $this->RegisterPropertyBoolean('EnableLocationDesignation', true);
-        $this->RegisterPropertyBoolean('EnableSensorList', true);
+        $this->RegisterPropertyBoolean('EnableDetectorList', true);
         $this->RegisterPropertyBoolean('EnableState', true);
         $this->RegisterPropertyBoolean('EnableAlertingSensor', true);
         // Description
         $this->RegisterPropertyString('LocationDesignation', '');
         // Sabotage sensors
-        $this->RegisterPropertyString('SabotageSensors', '[]');
+        $this->RegisterPropertyString('SabotageDetectors', '[]');
         // Notification
         $this->RegisterPropertyBoolean('UseNotification', true);
         $this->RegisterPropertyBoolean('UseStateSabotageDetected', true);
@@ -67,9 +67,13 @@ class Sabotagemelder extends IPSModule
         $this->RegisterPropertyInteger('Telegram', 0);
 
         // Variables
-        // Sabotage detector
-        $this->RegisterVariableBoolean('SabotageDetector', 'Sabotagemelder', '~Switch', 10);
-        $this->EnableAction('SabotageDetector');
+        // Sabotage detection
+        $id = @$this->GetIDForIdent('SabotageDetection');
+        $this->RegisterVariableBoolean('SabotageDetection', 'Sabotagemelder', '~Switch', 10);
+        $this->EnableAction('SabotageDetection');
+        if ($id == false) {
+            $this->SetValue('SabotageDetection', true);
+        }
         // Location
         $id = @$this->GetIDForIdent('Location');
         $this->RegisterVariableString('Location', 'Standort', '', 20);
@@ -77,10 +81,10 @@ class Sabotagemelder extends IPSModule
             IPS_SetIcon($this->GetIDForIdent('Location'), 'IPS');
         }
         // Sensor list
-        $id = @$this->GetIDForIdent('SensorList');
-        $this->RegisterVariableString('SensorList', 'Sabotagesensoren', 'HTMLBox', 30);
+        $id = @$this->GetIDForIdent('SabotageDetectorList');
+        $this->RegisterVariableString('SabotageDetectorList', 'Sabotagemelder', 'HTMLBox', 30);
         if ($id == false) {
-            IPS_SetIcon($this->GetIDForIdent('SensorList'), 'Eyes');
+            IPS_SetIcon($this->GetIDForIdent('SabotageDetectorList'), 'Eyes');
         }
         // State
         $profile = 'SM.' . $this->InstanceID . '.State';
@@ -93,7 +97,7 @@ class Sabotagemelder extends IPSModule
         $this->RegisterVariableBoolean('State', 'Status', $profile, 40);
         // Alerting sensor
         $id = @$this->GetIDForIdent('AlertingSensor');
-        $this->RegisterVariableString('AlertingSensor', 'Auslösender Sensor', '', 50);
+        $this->RegisterVariableString('AlertingSensor', 'Auslösender Melder', '', 50);
         $this->SetValue('AlertingSensor', '');
         if ($id == false) {
             IPS_SetIcon($this->GetIDForIdent('AlertingSensor'), 'Warning');
@@ -117,9 +121,9 @@ class Sabotagemelder extends IPSModule
         }
 
         // Options
-        IPS_SetHidden($this->GetIDForIdent('SabotageDetector'), !$this->ReadPropertyBoolean('EnableSabotageDetection'));
+        IPS_SetHidden($this->GetIDForIdent('SabotageDetection'), !$this->ReadPropertyBoolean('EnableSabotageDetection'));
         IPS_SetHidden($this->GetIDForIdent('Location'), !$this->ReadPropertyBoolean('EnableLocationDesignation'));
-        IPS_SetHidden($this->GetIDForIdent('SensorList'), !$this->ReadPropertyBoolean('EnableSensorList'));
+        IPS_SetHidden($this->GetIDForIdent('SabotageDetectorList'), !$this->ReadPropertyBoolean('EnableDetectorList'));
         IPS_SetHidden($this->GetIDForIdent('State'), !$this->ReadPropertyBoolean('EnableState'));
         IPS_SetHidden($this->GetIDForIdent('AlertingSensor'), !$this->ReadPropertyBoolean('EnableAlertingSensor'));
         $this->SetValue('Location', $this->ReadPropertyString('LocationDesignation'));
@@ -145,7 +149,7 @@ class Sabotagemelder extends IPSModule
         }
 
         // Register references and update messages
-        $variables = json_decode($this->ReadPropertyString('SabotageSensors'));
+        $variables = json_decode($this->ReadPropertyString('SabotageDetectors'));
         foreach ($variables as $variable) {
             if ($variable->Use) {
                 if ($variable->ID != 0 && @IPS_ObjectExists($variable->ID)) {
@@ -208,7 +212,7 @@ class Sabotagemelder extends IPSModule
                 if ($this->CheckMaintenanceMode()) {
                     return;
                 }
-                if (!$this->GetValue('SabotageDetector')) {
+                if (!$this->GetValue('SabotageDetection')) {
                     return;
                 }
 
@@ -228,7 +232,7 @@ class Sabotagemelder extends IPSModule
     {
         $formData = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
         // Sabotage detectors
-        $sabotageSensors = json_decode($this->ReadPropertyString('SabotageSensors'));
+        $sabotageSensors = json_decode($this->ReadPropertyString('SabotageDetectors'));
         if (!empty($sabotageSensors)) {
             foreach ($sabotageSensors as $sabotageSensor) {
                 $id = $sabotageSensor->ID;
@@ -606,10 +610,10 @@ class Sabotagemelder extends IPSModule
     public function RequestAction($Ident, $Value)
     {
         switch ($Ident) {
-            case 'SabotageDetector':
+            case 'SabotageDetection':
                 $this->SetValue($Ident, $Value);
                 if ($Value) {
-                    $sabotageSensors = json_decode($this->ReadPropertyString('SabotageSensors'));
+                    $sabotageSensors = json_decode($this->ReadPropertyString('SabotageDetectors'));
                     foreach ($sabotageSensors as $sabotageSensor) {
                         $this->CheckTriggerVariable($sabotageSensor->ID, true);
                     }

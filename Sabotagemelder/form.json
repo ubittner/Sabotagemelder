@@ -16,7 +16,7 @@
         {
           "type": "CheckBox",
           "name": "EnableSabotageDetection",
-          "caption": "Sabotagemelder"
+          "caption": "Sabotagemelder (Aus/An)"
         },
         {
           "type": "CheckBox",
@@ -25,8 +25,8 @@
         },
         {
           "type": "CheckBox",
-          "name": "EnableSensorList",
-          "caption": "Sabotagesensoren"
+          "name": "EnableDetectorList",
+          "caption": "Sabotagemelder (Liste)"
         },
         {
           "type": "CheckBox",
@@ -36,7 +36,7 @@
         {
           "type": "CheckBox",
           "name": "EnableAlertingSensor",
-          "caption": "Auslösender Sensor"
+          "caption": "Auslösender Melder"
         }
       ]
     },
@@ -54,11 +54,11 @@
     },
     {
       "type": "ExpansionPanel",
-      "caption": "Sabotagesensoren",
+      "caption": "Sabotagemelder",
       "items": [
         {
           "type": "List",
-          "name": "SabotageSensors",
+          "name": "SabotageDetectors",
           "rowCount": 10,
           "add": true,
           "delete": true,
@@ -92,7 +92,7 @@
               "name": "ID",
               "width": "auto",
               "add": 0,
-              "onClick": "SM_EnableTriggerVariableConfigurationButton($id, $SabotageSensors['ID']);",
+              "onClick": "SM_EnableTriggerVariableConfigurationButton($id, $SabotageDetectors['ID']);",
               "edit": {
                 "type": "SelectVariable"
               }
@@ -298,18 +298,18 @@
     },
     {
       "type": "ExpansionPanel",
-      "caption": "Homematic Sabotagesensoren",
+      "caption": "Sabotagemelder",
       "items": [
         {
           "type": "PopupButton",
-          "caption": "Sabotagesensoren automatisch ermitteln",
+          "caption": "Automatisch ermitteln",
           "popup": {
-            "caption": "Sabotagesensoren wirklich ermitteln?",
+            "caption": "Sabotagemelder wirklich automatisch ermitteln?",
             "items": [
               {
                 "type": "Button",
-                "caption": "Sabotagesensoren ermitteln",
-                "onClick": "SM_DetermineSabotageSensors($id);"
+                "caption": "HomeMatic / Homematic IP",
+                "onClick": "SM_DetermineSabotageDetectors($id);"
               }
             ]
           }

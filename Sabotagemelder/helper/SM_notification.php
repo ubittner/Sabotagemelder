@@ -19,7 +19,7 @@ trait SM_notification
         if ($this->CheckMaintenanceMode()) {
             return;
         }
-        if (!$this->GetValue('SabotageDetector')) {
+        if (!$this->GetValue('SabotageDetection')) {
             return;
         }
         $this->UpdateState();
@@ -71,7 +71,7 @@ trait SM_notification
         if ($this->CheckMaintenanceMode()) {
             return;
         }
-        if (!$this->GetValue('SabotageDetector')) {
+        if (!$this->GetValue('SabotageDetection')) {
             return;
         }
         $id = $this->ReadPropertyInteger('WebFrontNotification');
@@ -88,7 +88,7 @@ trait SM_notification
         if ($this->CheckMaintenanceMode()) {
             return;
         }
-        if (!$this->GetValue('SabotageDetector')) {
+        if (!$this->GetValue('SabotageDetection')) {
             return;
         }
         $id = $this->ReadPropertyInteger('WebFrontPushNotification');
@@ -105,7 +105,7 @@ trait SM_notification
         if ($this->CheckMaintenanceMode()) {
             return;
         }
-        if (!$this->GetValue('SabotageDetector')) {
+        if (!$this->GetValue('SabotageDetection')) {
             return;
         }
         $id = $this->ReadPropertyInteger('Mailer');
@@ -122,7 +122,7 @@ trait SM_notification
         if ($this->CheckMaintenanceMode()) {
             return;
         }
-        if (!$this->GetValue('SabotageDetector')) {
+        if (!$this->GetValue('SabotageDetection')) {
             return;
         }
         $id = $this->ReadPropertyInteger('NeXXtMobile');
@@ -139,7 +139,7 @@ trait SM_notification
         if ($this->CheckMaintenanceMode()) {
             return;
         }
-        if (!$this->GetValue('SabotageDetector')) {
+        if (!$this->GetValue('SabotageDetection')) {
             return;
         }
         $id = $this->ReadPropertyInteger('Sipgate');
@@ -156,7 +156,7 @@ trait SM_notification
         if ($this->CheckMaintenanceMode()) {
             return;
         }
-        if (!$this->GetValue('SabotageDetector')) {
+        if (!$this->GetValue('SabotageDetection')) {
             return;
         }
         $id = $this->ReadPropertyInteger('Telegram');

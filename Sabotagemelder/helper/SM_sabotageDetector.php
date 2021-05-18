@@ -11,11 +11,10 @@
 
 declare(strict_types=1);
 
-trait SM_sabotageSensor
+trait SM_sabotageDetector
 {
-    public function DetermineSabotageSensors(): void
+    public function DetermineSabotageDetectors(): void
     {
-        $listedVariables = [];
         $instanceIDs = @IPS_GetInstanceListByModuleID(self::HOMEMATIC_DEVICE_GUID);
         $variables = [];
         foreach ($instanceIDs as $instanceID) {
@@ -42,40 +41,38 @@ trait SM_sabotageSensor
                     }
                 }
             }
-            // Get already listed variables
-            $listedVariables = json_decode($this->ReadPropertyString('SabotageSensors'), true);
-            // Delete the variables that no longer exist
-            if (!empty($listedVariables)) {
-                $deleteVariables = array_diff(array_column($listedVariables, 'ID'), array_column($variables, 'ID'));
-                foreach ($deleteVariables as $key => $deleteVariable) {
-                    unset($listedVariables[$key]);
+        }
+        // Get already listed variables
+        $listedVariables = json_decode($this->ReadPropertyString('SabotageDetectors'), true);
+        // Add new variables
+        if (!empty($listedVariables)) {
+            $addVariables = array_diff(array_column($variables, 'ID'), array_column($listedVariables, 'ID'));
+            foreach ($addVariables as $addVariable) {
+                $name = strstr(@IPS_GetName(@IPS_GetParent($addVariable)), ':', true);
+                $type = IPS_GetVariable($addVariable)['VariableType'];
+                $triggerValue = 'true';
+                if ($type == 1) {
+                    $triggerValue = '1';
                 }
+                array_push($listedVariables, [
+                    'Use'          => true,
+                    'Name'         => $name,
+                    'ID'           => $addVariable,
+                    'TriggerValue' => $triggerValue]);
             }
-            // Add new variables
-            if (!empty($listedVariables)) {
-                $addVariables = array_diff(array_column($variables, 'ID'), array_column($listedVariables, 'ID'));
-                foreach ($addVariables as $addVariable) {
-                    $name = strstr(@IPS_GetName(@IPS_GetParent($addVariable)), ':', true);
-                    array_push($listedVariables, [
-                        'Use'          => true,
-                        'Name'         => $name,
-                        'ID'           => $addVariable,
-                        'TriggerValue' => 'true']);
-                }
-            } else {
-                $listedVariables = $variables;
-            }
+        } else {
+            $listedVariables = $variables;
         }
         // Sort variables by name
         array_multisort(array_column($listedVariables, 'Name'), SORT_ASC, $listedVariables);
         $listedVariables = array_values($listedVariables);
         // Update variable list
         $value = json_encode($listedVariables);
-        @IPS_SetProperty($this->InstanceID, 'SabotageSensors', $value);
+        @IPS_SetProperty($this->InstanceID, 'SabotageDetectors', $value);
         if (@IPS_HasChanges($this->InstanceID)) {
             @IPS_ApplyChanges($this->InstanceID);
         }
-        echo 'Sabotagesensoren wurden automatisch ermittelt!';
+        echo 'Sabotagemelder wurden automatisch ermittelt!';
     }
 
     public function UpdateState(): void
@@ -83,29 +80,31 @@ trait SM_sabotageSensor
         if ($this->CheckMaintenanceMode()) {
             return;
         }
-        if (!$this->GetValue('SabotageDetector')) {
+        if (!$this->GetValue('SabotageDetection')) {
             return;
         }
-        $sabotageSensors = json_decode($this->ReadPropertyString('SabotageSensors'));
+        $sabotageSensors = json_decode($this->ReadPropertyString('SabotageDetectors'), true);
         if (empty($sabotageSensors)) {
             return;
         }
+        // Sort variables by name
+        array_multisort(array_column($sabotageSensors, 'Name'), SORT_ASC, $sabotageSensors);
         $state = false;
         $sensorStateList = [];
         $timestamp = (string) date('d.m.Y, H:i:s');
         $string = "<table style='width: 100%; border-collapse: collapse;'>";
         $string .= '<tr><td><b>Status</b></td><td><b>Name</b></td><td><b>Letzte Statusprüfung</b></td></tr>';
         foreach ($sabotageSensors as $sabotageSensor) {
-            if (!$sabotageSensor->Use) {
+            if (!$sabotageSensor['Use']) {
                 continue;
             }
-            $id = $sabotageSensor->ID;
+            $id = $sabotageSensor['ID'];
             if ($id == 0 || @!IPS_ObjectExists($id)) {
                 continue;
             }
             $unicode = json_decode('"\u2705"'); # white_check_mark
             $actualValue = boolval(GetValue($id));
-            $triggerValue = $sabotageSensor->TriggerValue;
+            $triggerValue = $sabotageSensor['TriggerValue'];
             switch ($triggerValue) {
                 case '0':
                 case 'false':
@@ -125,14 +124,14 @@ trait SM_sabotageSensor
                 $unicode = json_decode('"\uD83E\uDD77"'); # ninja
                 $state = true;
             }
-            $string .= '<tr><td>' . $unicode . '</td><td>' . $sabotageSensor->Name . '</td><td>' . $timestamp . '</td></tr>';
+            $string .= '<tr><td>' . $unicode . '</td><td>' . $sabotageSensor['Name'] . '</td><td>' . $timestamp . '</td></tr>';
             array_push($sensorStateList, [
                 'unicode'   => $unicode,
-                'name'      => $sabotageSensor->Name,
+                'name'      => $sabotageSensor['Name'],
                 'timestamp' => $timestamp]);
         }
         $string .= '</table>';
-        $this->SetValue('SensorList', $string);
+        $this->SetValue('SabotageDetectorList', $string);
         $this->SetBuffer('SensorStateList', json_encode($sensorStateList));
         $this->SetValue('State', $state);
         if (!$state) {
@@ -145,10 +144,10 @@ trait SM_sabotageSensor
         if ($this->CheckMaintenanceMode()) {
             return;
         }
-        if (!$this->GetValue('SabotageDetector')) {
+        if (!$this->GetValue('SabotageDetection')) {
             return;
         }
-        $sabotageSensors = json_decode($this->ReadPropertyString('SabotageSensors'), true);
+        $sabotageSensors = json_decode($this->ReadPropertyString('SabotageDetectors'), true);
         if (empty($sabotageSensors)) {
             return;
         }
