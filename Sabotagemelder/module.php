@@ -266,7 +266,7 @@ class Sabotagemelder extends IPSModule
                     }
                     if ($actualValue == $triggerValue) {
                         $rowColor = '#FFC0C0'; # red
-                        $status = 'Rauch erkannt';
+                        $status = 'Sabotage erkannt';
                     }
                 }
                 $formData['elements'][2]['items'][0]['values'][] = [
