@@ -33,7 +33,7 @@ trait SM_notification
         $actualState = $this->GetValue('State');
         $statusDescription = 'OK';
         if ($actualState) {
-            $unicode = json_decode('"\uD83E\uDD77"'); # ninja
+            $unicode = json_decode('"\u2757"'); #  red exclamation mark
             $statusDescription = 'Sabotage erkannt';
         }
         // WebFront Notification

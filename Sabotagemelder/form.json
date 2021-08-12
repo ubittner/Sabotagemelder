@@ -144,7 +144,7 @@
             {
               "type": "CheckBox",
               "name": "UseStateSabotageDetected",
-              "caption": "\uD83E\uDD77"
+              "caption": "\u2757"
             },
             {
               "type": "Label",

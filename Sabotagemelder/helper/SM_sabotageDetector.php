@@ -121,7 +121,7 @@ trait SM_sabotageDetector
 
             }
             if ($actualValue == $triggerValue) {
-                $unicode = json_decode('"\uD83E\uDD77"'); # ninja
+                $unicode = json_decode('"\u2757"'); #  red exclamation mark
                 $state = true;
             }
             $string .= '<tr><td>' . $unicode . '</td><td>' . $sabotageSensor['Name'] . '</td><td>' . $timestamp . '</td></tr>';
@@ -199,7 +199,7 @@ trait SM_sabotageDetector
                 return;
             }
             // WebFront Notification
-            $unicode = json_decode('"\uD83E\uDD77"'); # ninja
+            $unicode = json_decode('"\u2757"'); # red exclamation mark
             $text = $location . "\n" . $unicode . " Sabotage erkannt\n" . $name . "\n" . $timestamp;
             $this->SendWebFrontNotification($title, $text, '');
             // WebFront Push Notification
